@@ -1,10 +1,11 @@
-import express, { Router, Request, Response } from 'express';
-import  {getGarages} from '../controllers/garageController';
+// src/routes/garageRoutes.ts
+import express from 'express';
+import { createNewGarage, getAllGarages, deleteGarage } from '../controllers/garageController';
 
-const router: Router = express.Router();
+const router = express.Router();
 
-router.get("/", (req: Request, res: Response) => {
-  getGarages(req, res);
-});
+router.post('/', createNewGarage);
+router.get('/', getAllGarages);
+router.delete('/:id', deleteGarage);
 
 export default router;

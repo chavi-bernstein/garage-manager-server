@@ -3,7 +3,7 @@ import express, { Express, Request, Response , Application } from 'express';
 import cors from "cors";
 // import corsOptions from './config/corsOptions';
 import garageRouter from './routes/garage';
-import { connectDB } from './config/dbConn'; 
+import connectDB from './config/dbConn';
 
 dotenv.config();
 
@@ -13,6 +13,8 @@ const PORT = process.env.PORT || 3000;
 connectDB()
 
 app.use(cors());
+app.use(express.json())
+
 
 app.use('/garages', garageRouter);
 
