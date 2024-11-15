@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 interface IGarage extends Document {
+    _id: number;
     mispar_mosah: number;
     shem_mosah: string;
     cod_sug_mosah: number;
@@ -17,6 +18,7 @@ interface IGarage extends Document {
 }
 
 const garageSchema: Schema = new Schema({
+    _id: { type: Number, required: true },
     mispar_mosah: { type: Number, required: true },
     shem_mosah: { type: String, required: true },
     cod_sug_mosah: { type: Number },

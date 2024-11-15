@@ -1,7 +1,7 @@
 export interface GarageApiResponse {
     result: {
       records: Array<{
-        _id: string;
+        _id: number;
         mispar_mosah: string;
         shem_mosah: string;
         cod_sug_mosah: string;
