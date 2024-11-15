@@ -9,23 +9,34 @@ import { mapToGarageData } from '../utils/garage.mapper';
 /**
  * Creates a new garage document in the database.
  */
-const createNewGarages = async (req: Request, res: Response): Promise<void> => {
+const createNewGarages = async (req: Request, res: Response) => {
     const garagesData = Array.isArray(req.body) ? req.body : [req.body];
 
     try {
-        await Garage.insertMany(garagesData, { ordered: false });
-        res.status(201).json({ message: "Garages inserted successfully." });
+        const createdGarages = await Promise.all(
+            garagesData.map(async (garageData) => {
+                const { _id } = garageData;
+
+                const existingGarage = await Garage.findById(_id);
+
+                if (existingGarage) {
+                    throw new Error(`Garage with _id ${_id} already exists.`);
+                }
+
+                const newGarage = await Garage.create(garageData);
+                return mapToGarageDTO(newGarage);
+            })
+        );
+
+        res.status(201).json(createdGarages);
     } catch (error: any) {
-        if (error.code === 11000) {
-            console.log("Duplicate data found. Skipping insertion for existing records.");
-            res.status(409).json({ message: "Some garages already exist in the database." });
+        if (error.message.includes("already exists")) {
+            res.status(409).json({ message: error.message });
         } else {
-            console.error("Error inserting garages:", error);
-            res.status(500).json({ message: "Error inserting garages", error });
+            res.status(400).json({ message: 'Error creating garages', error });
         }
     }
 };
-
 
 
 /**
