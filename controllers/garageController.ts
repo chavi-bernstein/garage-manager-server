@@ -14,29 +14,42 @@ const createNewGarages = async (req: Request, res: Response) => {
 
     try {
         const createdGarages = await Promise.all(
-            garagesData.map(async (garageData) => {
-                const { _id } = garageData;
+            garagesData.map(
+                async (garageData) => {
+                    const { _id, shem_mosah, mispar_mosah } = garageData;
 
-                const existingGarage = await Garage.findById(_id);
+                    console.log(garageData);
+                    // Check if name and number fields are present
+                    if (!shem_mosah || !mispar_mosah) {
+                        throw new Error(`Missing required fields: 'shem_mosah' (garage name) and 'mispar_mosah' (garage number).`);
+                    }
 
-                if (existingGarage) {
-                    throw new Error(`Garage with _id ${_id} already exists.`);
-                }
+                    // Check if garage with the given _id already exists
+                    const existingGarage = await Garage.findById(_id);
 
-                const newGarage = await Garage.create(garageData);
-                return mapToGarageDTO(newGarage);
-            })
+                    // If exists, throw an error indicating conflict   
+                    if (existingGarage) {
+                        throw new Error(`Garage with _id ${_id} already exists.`);
+                    }
+
+                    // Create a new garage if it doesn't exist and return its DTO
+                    const newGarage = await Garage.create(garageData);
+                    return mapToGarageDTO(newGarage);
+                })
         );
 
         res.status(201).json(createdGarages);
     } catch (error: any) {
         if (error.message.includes("already exists")) {
             res.status(409).json({ message: error.message });
+        } else if (error.message.includes("Missing required fields")) {
+            res.status(400).json({ message: error.message }); // Custom message for missing fields
         } else {
             res.status(400).json({ message: 'Error creating garages', error });
         }
     }
 };
+
 
 
 /**
@@ -45,10 +58,12 @@ const createNewGarages = async (req: Request, res: Response) => {
  */
 const getAllGarages = async (req: Request, res: Response): Promise<void> => {
     try {
+        const limit = parseInt(req.query.limit as string) || 5;
+
         const response = await axios.get<GarageApiResponse>('https://data.gov.il/api/3/action/datastore_search', {
             params: {
                 resource_id: 'bb68386a-a331-4bbc-b668-bba2766d517d',
-                limit: 5,
+                limit: limit,
             }
         });
 
