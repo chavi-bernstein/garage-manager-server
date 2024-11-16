@@ -1,6 +1,7 @@
 ## Garage Manager Server
 This is a garage management project built with Node.js and TypeScript. The system allows CRUD operations (Create, Read, Update, Delete) on garage data and includes the option to load data from a government API on data.gov.il. The data is stored in a MongoDB database using Mongoose.
-Main Features
+
+## Main Features
 
 Add a Garage: Allows adding a new garage to the system.
 Delete a Garage: Allows deleting an existing garage by its unique identifier.
