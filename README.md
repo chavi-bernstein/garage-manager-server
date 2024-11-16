@@ -28,7 +28,6 @@ dotenv: Manages environment variables securely.
 ## Installation and Setup
 
 Clone the Project Repository:
-bash:
 git clone https://github.com/chavi-bernstein/garage-manager-server.git
 cd garage-manager-server
 
@@ -44,5 +43,4 @@ Install Dependencies:
 npm install
 
 Run the Project:
-bash:
 npx ts-node server.ts
